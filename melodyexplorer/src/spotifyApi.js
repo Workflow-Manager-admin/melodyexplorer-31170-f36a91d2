@@ -1,5 +1,10 @@
 //
-// Helper functions for interacting with the Spotify Web API
+/**
+ * Helper functions for interacting with the Spotify Web API
+ * WARNING: Do NOT expose your actual Spotify credentials in frontend/client-side code in production.
+ * For real deployments, proxy sensitive credentials requests server-side.
+ * See documentation: https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow
+ */
 // Supports client credentials authentication, artist search by (language/region), and fetching top tracks
 //
 

@@ -29,23 +29,39 @@ function SpotifyTrackSearch({ show, accentColor }) {
     async function fetchToken() {
       setError("");
       try {
+        // WARNING: Never put real client ID/secret here in production. See src/spotifyApi.js for secure notes.
+        const clientId = process.env.REACT_APP_SPOTIFY_CLIENT_ID || "6b9da695e18f407f84c4f5da8431ee24";
+        const clientSecret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET || "4e406d263f464516bb24925c54eb14d6";
+        if (!clientId || !clientSecret ||
+            clientId === "YOUR_CLIENT_ID" || clientSecret === "YOUR_CLIENT_SECRET") {
+          setError("Spotify client credentials not configured. Set via environment or in src/spotifyApi.js for local testing only.");
+          return;
+        }
+        const authHeader = window.btoa(unescape(encodeURIComponent(`${clientId}:${clientSecret}`)));
         const res = await fetch(
           "https://accounts.spotify.com/api/token",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
-              Authorization:
-                "Basic " +
-                btoa("6b9da695e18f407f84c4f5da8431ee24:4e406d263f464516bb24925c54eb14d6"),
+              Authorization: "Basic " + authHeader,
             },
             body: "grant_type=client_credentials",
           }
         );
         const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.error_description || data.error || "Error obtaining Spotify token.");
+          return;
+        }
+        if (!data.access_token) {
+          setError("No access token returned from Spotify.");
+          return;
+        }
         setToken(data.access_token);
       } catch (e) {
-        setError("Error obtaining Spotify token.");
+        setError(e.message || "Error obtaining Spotify token.");
       }
     }
     fetchToken();
