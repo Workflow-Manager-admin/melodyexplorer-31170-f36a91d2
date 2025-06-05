@@ -20,17 +20,18 @@ const COLORS = {
  */
 /**
  * Maps each language to a display initial in its native script.
+ * These are the culturally significant/most iconic first letters for each script.
  */
 const LANGUAGE_INITIALS = {
-  "Hindi": "हि",
-  "Tamil": "த",
-  "Telugu": "తె",
-  "Kannada": "ಕ",
-  "Malayalam": "മ",
-  "Bengali": "ব",
-  "Punjabi": "ਪੰ",
-  "Marathi": "म",
-  "Gujarati": "ગ",
+  "Hindi": "अ",       // Devanagari "A"
+  "Tamil": "அ",      // Tamil "A"
+  "Telugu": "అ",     // Telugu "A"
+  "Kannada": "ಅ",    // Kannada "A"
+  "Malayalam": "അ",  // Malayalam "A"
+  "Bengali": "অ",    // Bengali "O"
+  "Punjabi": "ਅ",    // Gurmukhi "A"
+  "Marathi": "अ",    // Marathi shares Devanagari "A"
+  "Gujarati": "અ",   // Gujarati "A"
 };
 
 const LANGUAGES = [
