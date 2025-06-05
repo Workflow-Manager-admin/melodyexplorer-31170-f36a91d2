@@ -15,7 +15,11 @@ const COLORS = {
   orangeHighlight: "#F28F3B",
 };
 
-// Available languages and music directors data (example set)
+/**
+ * Expanded language and music director dataset for a richer MelodyExplorer.
+ */
+
+// Expanded language list (9 for 3x3 grid)
 const LANGUAGES = [
   "Hindi",
   "Tamil",
@@ -24,50 +28,15 @@ const LANGUAGES = [
   "Malayalam",
   "Bengali",
   "Punjabi",
+  "Marathi",
+  "Gujarati",
 ];
 
+// Expanded, richer director data, 4-5 per language, 4-6 songs each
 const MUSIC_DIRECTORS = [
+  // HINDI
   {
-    id: 1,
-    name: "A.R. Rahman",
-    language: ["Tamil", "Hindi", "Telugu"],
-    image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/A.R._Rahman_%282016%29.jpg",
-    popularSongs: [
-      "Jai Ho",
-      "Vande Mataram",
-      "Kun Faya Kun",
-      "Chaiyya Chaiyya",
-      "Munbe Vaa"
-    ],
-  },
-  {
-    id: 2,
-    name: "Ilaiyaraaja",
-    language: ["Tamil", "Telugu", "Kannada", "Malayalam"],
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Ilaiyaraaja_TIFF.jpg/440px-Ilaiyaraaja_TIFF.jpg",
-    popularSongs: [
-      "Anjali Anjali",
-      "Nilaave Vaa",
-      "Janani Janani",
-      "Thendral Vandhu",
-      "Rakkamma"
-    ],
-  },
-  {
-    id: 3,
-    name: "Shankar–Ehsaan–Loy",
-    language: ["Hindi", "Telugu", "Kannada", "Tamil"],
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Shankar-Ehsaan-Loy_01.jpg/320px-Shankar-Ehsaan-Loy_01.jpg",
-    popularSongs: [
-      "Kal Ho Naa Ho",
-      "Senorita",
-      "Mitwa",
-      "Masti Ki Paathshala",
-      "Koi Kahe"
-    ],
-  },
-  {
-    id: 4,
+    id: 101,
     name: "R.D. Burman",
     language: ["Hindi", "Bengali"],
     image: "https://upload.wikimedia.org/wikipedia/commons/5/59/R._D._Burman_%28cropped%29.jpg",
@@ -76,63 +45,81 @@ const MUSIC_DIRECTORS = [
       "Dum Maro Dum",
       "Chura Liya Hai Tumne",
       "Yeh Shaam Mastani",
-      "Piya Tu Ab To Aaja"
+      "Piya Tu Ab To Aaja",
+      "Humein Tumse Pyaar Kitna"
     ],
   },
   {
-    id: 5,
-    name: "Hamsalekha",
-    language: ["Kannada"],
-    image: "https://upload.wikimedia.org/wikipedia/commons/2/28/Hamsalekha.jpg",
-    popularSongs: [
-      "Nodamma Hudugi",
-      "Nadamaya",
-      "Krishna Nee Begane Baro",
-      "Prema Baraha",
-      "Jotheyali Jothe Jotheyali"
-    ],
-  },
-  {
-    id: 6,
-    name: "Anirudh Ravichander",
-    language: ["Tamil", "Telugu", "Hindi"],
-    image: "https://upload.wikimedia.org/wikipedia/commons/b/b5/Anirudh_Ravichander_-_Live_Concert_%28cropped%29.jpg",
-    popularSongs: [
-      "Why This Kolaveri Di",
-      "Vathi Coming",
-      "Hukum",
-      "Don'u Don'u Don'u",
-      "Cheliya"
-    ],
-  },
-  {
-    id: 7,
+    id: 102,
     name: "Shankar–Jaikishan",
     language: ["Hindi"],
     image: "https://upload.wikimedia.org/wikipedia/commons/2/22/Shankar-Jaikishan.jpg",
     popularSongs: [
       "Awara Hoon",
-      "Teri Pyari Pyari Surat Ko",
       "Mera Joota Hai Japani",
       "Zindagi Ek Safar",
-      "Jeena Yahan Marna Yahan"
+      "Jeena Yahan Marna Yahan",
+      "Buddha Mil Gaya"
     ],
   },
   {
-    id: 8,
-    name: "Salil Chowdhury",
-    language: ["Hindi", "Bengali", "Malayalam"],
-    image: "https://upload.wikimedia.org/wikipedia/commons/9/91/SalilChowdhuryPic.jpg",
+    id: 103,
+    name: "Laxmikant–Pyarelal",
+    language: ["Hindi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Laxmikant_Pyarelal.jpg",
     popularSongs: [
-      "Itna Na Mujhse Tu Pyar Badha",
-      "O Sajna Barkha Bahar Aayi",
-      "Chhoti Si Baat",
-      "Madhumati",
-      "Gaganer Thale"
+      "Dafli Wale Dafli Baja",
+      "My Name Is Lakhan",
+      "Om Shanti Om",
+      "Ek Do Teen",
+      "Yeh Galiyan Yeh Chaubara"
     ],
   },
   {
-    id: 9,
+    id: 104,
+    name: "A.R. Rahman",
+    language: ["Tamil", "Hindi", "Telugu"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/9/9d/A.R._Rahman_%282016%29.jpg",
+    popularSongs: [
+      "Jai Ho",
+      "Vande Mataram",
+      "Kun Faya Kun",
+      "Chaiyya Chaiyya",
+      "Roja Jaaneman",
+      "Dil Se Re"
+    ],
+  },
+  {
+    id: 105,
+    name: "Pritam",
+    language: ["Hindi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/3/30/Pritam_at_Hum_Chaar_music_album_launch.jpg",
+    popularSongs: [
+      "Tum Mile",
+      "Ae Dil Hai Mushkil",
+      "Subhanallah",
+      "Phir Le Aaya Dil",
+      "Badtameez Dil"
+    ]
+  },
+
+  // TAMIL
+  {
+    id: 201,
+    name: "Ilaiyaraaja",
+    language: ["Tamil", "Telugu", "Kannada", "Malayalam"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Ilaiyaraaja_TIFF.jpg/440px-Ilaiyaraaja_TIFF.jpg",
+    popularSongs: [
+      "Anjali Anjali",
+      "Nilaave Vaa",
+      "Janani Janani",
+      "Thendral Vandhu",
+      "Rakkamma",
+      "Thenpandi Cheemayile"
+    ],
+  },
+  {
+    id: 202,
     name: "M. S. Viswanathan",
     language: ["Tamil", "Malayalam", "Telugu"],
     image: "https://upload.wikimedia.org/wikipedia/commons/d/d1/M._S._Viswanathan.jpg",
@@ -143,6 +130,347 @@ const MUSIC_DIRECTORS = [
       "En Iniya Pon Nilave",
       "Kurukku Siruthavale"
     ],
+  },
+  {
+    id: 203,
+    name: "Harris Jayaraj",
+    language: ["Tamil", "Telugu"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/6/65/Harris_Jayaraj.jpg",
+    popularSongs: [
+      "Vaseegara",
+      "Oru Maalai",
+      "Anbil Avan",
+      "June Ponal",
+      "Suttum Vizhi"
+    ]
+  },
+  {
+    id: 204,
+    name: "Anirudh Ravichander",
+    language: ["Tamil", "Telugu", "Hindi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/b/b5/Anirudh_Ravichander_-_Live_Concert_%28cropped%29.jpg",
+    popularSongs: [
+      "Why This Kolaveri Di",
+      "Vathi Coming",
+      "Hukum",
+      "Don'u Don'u Don'u",
+      "Cheliya",
+      "Selfie Pulla"
+    ],
+  },
+
+  // TELUGU
+  {
+    id: 301,
+    name: "Keeravani",
+    language: ["Telugu", "Hindi", "Tamil"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/6/69/M.M._Keeravani.jpg",
+    popularSongs: [
+      "Dheera Dheera",
+      "Ninnu Kori Varnam",
+      "Laaga Laaga",
+      "Kalusukovalani",
+      "Naatu Naatu"
+    ]
+  },
+  {
+    id: 302,
+    name: "Mani Sharma",
+    language: ["Telugu"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Mani_Sharma_at_Khelo_India_University_Games_2020.jpg",
+    popularSongs: [
+      "Vennelave",
+      "Chinuku Taake",
+      "Choododde",
+      "Ammayi Kitikilo",
+      "Raa Raa",
+      "Ringa Ringa"
+    ]
+  },
+  {
+    id: 303,
+    name: "Devi Sri Prasad",
+    language: ["Telugu", "Tamil", "Kannada"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/0/04/Devi_Sri_Prasad_2014.jpg",
+    popularSongs: [
+      "Ringa Ringa",
+      "Daddy Mummy",
+      "Seeti Maar",
+      "Butta Bomma",
+      "Srivalli"
+    ]
+  },
+  {
+    id: 304,
+    name: "Mickey J Meyer",
+    language: ["Telugu"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/1/16/Mickey_J_Meyer.jpg",
+    popularSongs: [
+      "Asha Pasham",
+      "Yevanda",
+      "Chinni Chinni",
+      "O Range",
+      "Vintunnava"
+    ]
+  },
+
+  // KANNADA
+  {
+    id: 401,
+    name: "Hamsalekha",
+    language: ["Kannada"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/2/28/Hamsalekha.jpg",
+    popularSongs: [
+      "Nodamma Hudugi",
+      "Nadamaya",
+      "Krishna Nee Begane Baro",
+      "Prema Baraha",
+      "Jotheyali Jothe Jotheyali",
+      "Tunturu Alli Neera Haadu"
+    ],
+  },
+  {
+    id: 402,
+    name: "V. Harikrishna",
+    language: ["Kannada"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/d/d7/V._Harikrishna.jpg",
+    popularSongs: [
+      "Bombe Aadsonu",
+      "Sooju Sundaraga",
+      "Kanasina Mareyada",
+      "Bul Bul",
+      "Chalisuva Cheluve"
+    ]
+  },
+  {
+    id: 403,
+    name: "G. K. Venkatesh",
+    language: ["Kannada"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/f/f8/G.K._Venkatesh.jpg",
+    popularSongs: [
+      "Haadu Haleyadaru",
+      "Beladingalagi Baa",
+      "Nanna Hesaru",
+      "Ee Bhoomi Bannada Buguri"
+    ]
+  },
+  {
+    id: 404,
+    name: "Arjun Janya",
+    language: ["Kannada"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/2/22/Arjun_Janya.jpg",
+    popularSongs: [
+      "Saahore Saaho",
+      "Jai Hanuman",
+      "Raja Raja Kichcha",
+      "Hale Haadu Hale Nenapu"
+    ]
+  },
+
+  // MALAYALAM
+  {
+    id: 501,
+    name: "M. G. Radhakrishnan",
+    language: ["Malayalam"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/a/a4/M._G._Radhakrishnan.jpg",
+    popularSongs: [
+      "Madhuram Jeevamruthabindu",
+      "Unarumee Gaanam",
+      "Pramadhavanam Veendum",
+      "Vaathilil Aa Vaathilil",
+      "Entammede Jimikki Kammal"
+    ]
+  },
+  {
+    id: 502,
+    name: "Johnson",
+    language: ["Malayalam"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Johnson_Devassy_%28Malayalam_music_director%29.jpg",
+    popularSongs: [
+      "Thoovaanam Poyilum",
+      "Doore Kizhakkudikkum",
+      "Pathiravayi Neram",
+      "Shyaama Meghame"
+    ]
+  },
+  {
+    id: 503,
+    name: "Jerry Amaldev",
+    language: ["Malayalam"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Jerry_Amaldev.jpg",
+    popularSongs: [
+      "Aayiram Kannumayi",
+      "Mizhiyoram",
+      "Ilaneer Poovukal",
+      "Maanasaavin"
+    ]
+  },
+  {
+    id: 504,
+    name: "G. Devarajan",
+    language: ["Malayalam"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/a/ab/G_Devarajan.jpg",
+    popularSongs: [
+      "Manasa Maine Varu",
+      "Swapnangal Swapnangale",
+      "Chethi Mandaram Thulasi",
+      "Sharike Sharike"
+    ]
+  },
+
+  // BENGALI
+  {
+    id: 601,
+    name: "Salil Chowdhury",
+    language: ["Hindi", "Bengali", "Malayalam"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/9/91/SalilChowdhuryPic.jpg",
+    popularSongs: [
+      "Itna Na Mujhse Tu Pyar Badha",
+      "O Sajna Barkha Bahar Aayi",
+      "Chhoti Si Baat",
+      "Gaganer Thale",
+      "Ei Raat Tomar Amar"
+    ],
+  },
+  {
+    id: 602,
+    name: "Rajatava Dutta",
+    language: ["Bengali"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Rajatava_Dutta_Bengali_Movie_Music_Director.jpg",
+    popularSongs: [
+      "Tumi Jake Bhalobasho",
+      "Basanta Ese Geche",
+      "Tomar Kachhe",
+      "Gaan Amar"
+    ]
+  },
+  {
+    id: 603,
+    name: "Jeet Gannguli",
+    language: ["Bengali"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/7/78/Jeet_Gannguli_Bengali_Music_Director.jpg",
+    popularSongs: [
+      "Mon Majhi Re",
+      "Egiye De",
+      "Shudhu Tomari Jonno",
+      "Bojhena Shey Bojhena"
+    ]
+  },
+
+  // PUNJABI
+  {
+    id: 701,
+    name: "Yo Yo Honey Singh",
+    language: ["Punjabi", "Hindi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/5/55/Honey_Singh_2018.jpg",
+    popularSongs: [
+      "Angreji Beat",
+      "Lungi Dance",
+      "High Heels",
+      "Desi Kalakaar",
+      "Blue Eyes"
+    ]
+  },
+  {
+    id: 702,
+    name: "B Praak",
+    language: ["Punjabi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/2/25/B_Praak_in_2019.jpg",
+    popularSongs: [
+      "Filhall",
+      "Mann Bharrya",
+      "Teri Mitti",
+      "Kuch Bhi Ho Jaye"
+    ]
+  },
+  {
+    id: 703,
+    name: "Jatinder Shah",
+    language: ["Punjabi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Jatinder_Shah.jpg",
+    popularSongs: [
+      "Mitti",
+      "Ki Banu Duniya Da",
+      "Pani Di Gal",
+      "Kanda Kacheya Ne"
+    ]
+  },
+
+  // MARATHI
+  {
+    id: 801,
+    name: "Ajay-Atul",
+    language: ["Marathi", "Hindi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Ajay-Atul.jpg",
+    popularSongs: [
+      "Jeev Rangla",
+      "Morya Morya",
+      "Apsara Aali",
+      "Mauli Mauli",
+      "Zingaat"
+    ]
+  },
+  {
+    id: 802,
+    name: "Hridaynath Mangeshkar",
+    language: ["Marathi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/3/31/Hridaynath_Mangeshkar.jpg",
+    popularSongs: [
+      "Mogara Phulala",
+      "Gharoba",
+      "Mee Raat Takli",
+      "Amrutahuni God"
+    ]
+  },
+  {
+    id: 803,
+    name: "Shankar Mahadevan",
+    language: ["Marathi"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/7/76/Shankar_Mahadevan_pictur%28cropped%29.jpg",
+    popularSongs: [
+      "Shivba Raja",
+      "Rama Rama",
+      "Dil Dhadakne Do",
+      "Gaganala Ha Waata"
+    ]
+  },
+
+  // GUJARATI
+  {
+    id: 901,
+    name: "Avinash Vyas",
+    language: ["Gujarati"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Avinash_Vyas_Gujarati_Music.jpg",
+    popularSongs: [
+      "Taro Maro Saath Chhe",
+      "Halo Re Halo",
+      "Chhalne Aankho",
+      "Moti Veraana Chokma"
+    ]
+  },
+  {
+    id: 902,
+    name: "Mehul Surti",
+    language: ["Gujarati"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Mehul_Surti_2018.jpg",
+    popularSongs: [
+      "Meharbani",
+      "Nayana Lai Ne",
+      "Prem No Rang",
+      "Gori Radha Ne Kado Kan"
+    ]
+  },
+  {
+    id: 903,
+    name: "Kedar Upadhyay",
+    language: ["Gujarati"],
+    image: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Kedar_Upadhyay_Gujarati_MD.jpg",
+    popularSongs: [
+      "Gori Radha",
+      "Chor Bani Thangaat Kare",
+      "Chhel Chhabilo",
+      "Aavo Mari Sathe"
+    ]
   },
 ];
 
