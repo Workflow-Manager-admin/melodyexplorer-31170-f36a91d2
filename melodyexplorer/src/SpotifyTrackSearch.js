@@ -34,13 +34,7 @@ function SpotifyTrackSearch({ show, accentColor }) {
     async function fetchToken() {
       setError("");
       try {
-        // NOTE: Token retrieval is now done securely via the backend proxy endpoint.
-        //       This ensures client_id and client_secret are NEVER exposed in frontend code.
-        //       Example usage:
-        //       const res = await fetch("/getSpotifyToken");
-        //       const data = await res.json();
-        //       if (data.access_token) setToken(data.access_token);
-
+        // Fetch token exclusively from backend proxy endpoint.
         const res = await fetch("/getSpotifyToken");
         const data = await res.json();
 
