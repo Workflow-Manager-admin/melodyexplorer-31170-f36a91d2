@@ -163,9 +163,29 @@ const languageFromCode = (langCode) =>
 export default function DirectorsPage() {
   const { lang } = useParams();
   const language = languageFromCode(lang);
+
+  const [directors, setDirectors] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [selectedDirector, setSelectedDirector] = useState(null);
 
-  useEffect(() => { setSelectedDirector(null); }, [language]);
+  useEffect(() => {
+    if (!language) return;
+    setDirectors([]);
+    setSelectedDirector(null);
+    setLoading(true);
+    setError("");
+    fetchArtistsByLanguage(language)
+      .then(result => {
+        if (result.error) {
+          setError(result.error);
+          setDirectors([]);
+        } else {
+          setDirectors(result.artists);
+        }
+        setLoading(false);
+      });
+  }, [language]);
 
   if (!language) {
     return (
@@ -175,25 +195,27 @@ export default function DirectorsPage() {
     );
   }
 
-  const directors = MUSIC_DIRECTORS.filter((d) =>
-    d.language.map(l => l.toLowerCase()).includes(language.toLowerCase())
-  );
-
   return (
     <>
       <div>
         <div style={{
           textAlign: "center", marginBottom: 8, fontWeight: 600, color: COLORS.tealAccent, fontSize: 21
         }}>
-          {directors.length === 0
-            ? "No directors available for this language."
-            : `Select a Music Director (${language})`}
+          {loading
+            ? "Loading directors..."
+            : error
+            ? `Error: ${error}`
+            : (directors.length === 0
+               ? "No directors available for this language."
+               : `Select a Music Director (${language})`)}
         </div>
-        <DirectorGallery
-          directors={directors}
-          selectedDirector={selectedDirector}
-          onSelect={setSelectedDirector}
-        />
+        {!loading && !error && (
+          <DirectorGallery
+            directors={directors}
+            selectedDirector={selectedDirector}
+            onSelect={setSelectedDirector}
+          />
+        )}
       </div>
       {selectedDirector && (
         <DirectorDetail director={selectedDirector} />
@@ -215,7 +237,7 @@ export default function DirectorsPage() {
             margin: "13px 8px 0 8px",
           }}>
             <span style={{ color: COLORS.tealAccent }}>
-              Search for more songs by {selectedDirector.name} (Spotify)
+              Search for more songs by {selectedDirector.strArtist} (Spotify)
             </span>
           </div>
           <SpotifyTrackSearch show accentColor={COLORS.tealAccent} />
