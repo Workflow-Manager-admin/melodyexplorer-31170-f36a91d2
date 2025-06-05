@@ -224,7 +224,13 @@ export default function DirectorsPage() {
   const [selectedDirector, setSelectedDirector] = useState(null);
 
   useEffect(() => {
-    if (!language) return;
+    if (!language || typeof language !== "string" || !language.trim()) {
+      setError("Invalid or empty language selected.");
+      setDirectors([]);
+      setLoading(false);
+      setSelectedDirector(null);
+      return;
+    }
     setDirectors([]);
     setSelectedDirector(null);
     setLoading(true);
@@ -238,6 +244,9 @@ export default function DirectorsPage() {
       .then(result => {
         if (result.error) {
           setError(result.error);
+          setDirectors([]);
+        } else if (!result.artists || !Array.isArray(result.artists) || result.artists.length === 0) {
+          setError("No artists found for this language.");
           setDirectors([]);
         } else {
           setDirectors(result.artists);
