@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 /** --- Color Palette --- */
+import MUSIC_DIRECTORS from "./musicDirectorsData";
+import SpotifyTrackSearch from "./SpotifyTrackSearch";
+
 const COLORS = {
   primary: "#eca7d6",
   secondary: "#191414",
@@ -16,9 +19,6 @@ const COLORS = {
 const LANGUAGES = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Punjabi", "Marathi", "Gujarati"
 ];
-
-import MUSIC_DIRECTORS from "./musicDirectorsData";
-import SpotifyTrackSearch from "./SpotifyTrackSearch";
 
 // PUBLIC_INTERFACE
 function DirectorGallery({ directors, selectedDirector, onSelect }) {
