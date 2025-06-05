@@ -529,14 +529,16 @@ function LanguageGrid({ languages, selected, onSelect }) {
           aria-current={selected === lang ? "true" : undefined}
           tabIndex={0}
         >
-          <span style={{
-            fontSize: 28,
-            fontWeight: 800,
-            color: selected === lang ? COLORS.primary : COLORS.slateBlue,
-            display: "block",
-            marginBottom: 10
-          }}>
-            {lang[0]}
+          <span
+            style={{
+              fontSize: 36,
+              fontWeight: 900,
+              color: selected === lang ? COLORS.primary : COLORS.slateBlue,
+              display: "block",
+              marginBottom: 10
+            }}
+          >
+            {LANGUAGE_INITIALS[lang] || lang[0]}
           </span>
           {lang}
         </button>
