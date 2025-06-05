@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { searchArtistsByLanguage, fetchTopTracksByArtistId } from "./deezerApi";
-import { searchArtists as searchItunesArtists, fetchTopTracksByArtistId as fetchItunesTracks } from "./itunesApi";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getSpotifyAccessToken, searchSpotifyArtistsByLanguage, fetchSpotifyTopTracksByArtistId } from "./spotifyApi";
 import SpotifyTrackSearch from "./SpotifyTrackSearch";
 
 const COLORS = {
@@ -19,11 +20,7 @@ const LANGUAGES = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Punjabi", "Marathi", "Gujarati"
 ];
 
-/**
- * Change this to "itunes" to fetch from iTunes API for demo/testing.
- * Once confirmed, revert to "deezer" or make this configurable.
- */
-const API_SOURCE = "itunes"; // "deezer" or "itunes"
+const API_SOURCE = "spotify"; // Spotify as the API source
 
 // PUBLIC_INTERFACE
 /**
