@@ -24,7 +24,7 @@ const API_SOURCE = "spotify"; // Spotify as the API source
 
 // PUBLIC_INTERFACE
 /**
- * Gallery of Directors/Artists (Deezer or iTunes API integration)
+ * Gallery of Directors/Artists (Spotify API integration)
  */
 function DirectorGallery({ directors, selectedDirector, onSelect }) {
   return (
@@ -77,9 +77,12 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
               marginBottom: 6,
               minHeight: 22
             }}>{artist.name}</div>
-          {/* Show genre or nb_fan according to API */}
           <div style={{ color: "#888", fontSize: 13 }}>
-            {artist.genre ? <span>{artist.genre}</span> : (typeof artist.nb_fan === "number" && <span>▲ {artist.nb_fan.toLocaleString()} fans</span>)}
+            {artist.genre
+              ? <span>{artist.genre}</span>
+              : typeof artist.popularity === "number"
+              ? <span>★ Popularity: {artist.popularity}</span>
+              : null}
           </div>
         </div>
       ))}
