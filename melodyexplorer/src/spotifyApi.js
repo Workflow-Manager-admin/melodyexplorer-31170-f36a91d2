@@ -20,12 +20,12 @@ const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
 /**
  * PUBLIC_INTERFACE
  * Get a Spotify access token from the backend.
- * Uses the /getSpotifyToken endpoint to ensure client credentials stay secret.
+ * Uses the /getSpotifyToken endpoint—never contacts Spotify directly from frontend.
  * Returns { access_token } or { error }
  */
 export async function getSpotifyAccessToken() {
   try {
-    // Always fetch the token from our backend proxy.
+    // Request the access token from secure backend endpoint.
     const response = await fetch("/getSpotifyToken");
     const data = await response.json();
     if (!response.ok || data.error) {
