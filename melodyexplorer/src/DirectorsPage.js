@@ -18,7 +18,9 @@ const LANGUAGES = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Punjabi", "Marathi", "Gujarati"
 ];
 
-// PUBLIC_INTERFACE
+/**
+ * Gallery of Directors/Artists (TheAudioDB API integration)
+ */
 function DirectorGallery({ directors, selectedDirector, onSelect }) {
   return (
     <div style={{
@@ -28,16 +30,16 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
       justifyContent: "center",
       margin: "36px 0 18px 0",
     }}>
-      {directors.map((director) => (
+      {directors.map((artist) => (
         <div
-          key={director.id}
-          onClick={() => onSelect(director)}
+          key={artist.idArtist}
+          onClick={() => onSelect(artist)}
           style={{
             cursor: "pointer",
-            boxShadow: director.id === selectedDirector?.id
+            boxShadow: artist.idArtist === selectedDirector?.idArtist
               ? `0 0 0 4px ${COLORS.orangeHighlight}aa`
               : "0 2px 10px #2222",
-            background: director.id === selectedDirector?.id
+            background: artist.idArtist === selectedDirector?.idArtist
               ? COLORS.tealAccent
               : COLORS.accent,
             borderRadius: 18,
@@ -49,8 +51,8 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
           }}
         >
           <img
-            src={director.image}
-            alt={director.name}
+            src={artist.strArtistThumb || ""}
+            alt={artist.strArtist}
             style={{
               width: 98,
               height: 98,
@@ -60,6 +62,7 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
               marginBottom: 10,
               border: "2.5px solid #b6e0e0"
             }}
+            onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/98x98?text=No+Image"; }}
           />
           <div
             style={{
@@ -68,7 +71,7 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
               color: COLORS.slateBlue,
               marginBottom: 6,
               minHeight: 22
-            }}>{director.name}</div>
+            }}>{artist.strArtist}</div>
         </div>
       ))}
     </div>
