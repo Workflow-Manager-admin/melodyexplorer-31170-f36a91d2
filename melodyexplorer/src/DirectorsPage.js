@@ -195,7 +195,7 @@ export default function DirectorsPage() {
     setSelectedDirector(null);
     setLoading(true);
     setError("");
-    fetchArtistsByLanguage(language)
+    searchArtistsByLanguage(language)
       .then(result => {
         if (result.error) {
           setError(result.error);
@@ -222,7 +222,7 @@ export default function DirectorsPage() {
           textAlign: "center", marginBottom: 8, fontWeight: 600, color: COLORS.tealAccent, fontSize: 21
         }}>
           {loading
-            ? "Loading directors..."
+            ? "Loading directors (Deezer)..."
             : error
             ? `Error: ${error}`
             : (directors.length === 0
@@ -257,7 +257,7 @@ export default function DirectorsPage() {
             margin: "13px 8px 0 8px",
           }}>
             <span style={{ color: COLORS.tealAccent }}>
-              Search for more songs by {selectedDirector.strArtist} (Spotify)
+              Search for more songs by {selectedDirector.name} (Spotify)
             </span>
           </div>
           <SpotifyTrackSearch show accentColor={COLORS.tealAccent} />
