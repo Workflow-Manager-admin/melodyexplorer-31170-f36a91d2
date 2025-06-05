@@ -33,14 +33,14 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
     }}>
       {directors.map((artist) => (
         <div
-          key={artist.idArtist}
+          key={artist.id}
           onClick={() => onSelect(artist)}
           style={{
             cursor: "pointer",
-            boxShadow: artist.idArtist === selectedDirector?.idArtist
+            boxShadow: artist.id === selectedDirector?.id
               ? `0 0 0 4px ${COLORS.orangeHighlight}aa`
               : "0 2px 10px #2222",
-            background: artist.idArtist === selectedDirector?.idArtist
+            background: artist.id === selectedDirector?.id
               ? COLORS.tealAccent
               : COLORS.accent,
             borderRadius: 18,
@@ -52,8 +52,8 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
           }}
         >
           <img
-            src={artist.strArtistThumb || ""}
-            alt={artist.strArtist}
+            src={artist.picture || ""}
+            alt={artist.name}
             style={{
               width: 98,
               height: 98,
@@ -72,7 +72,10 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
               color: COLORS.slateBlue,
               marginBottom: 6,
               minHeight: 22
-            }}>{artist.strArtist}</div>
+            }}>{artist.name}</div>
+          <div style={{ color: "#888", fontSize: 13 }}>
+            {artist.nb_fan ? <span>▲ {artist.nb_fan.toLocaleString()} fans</span> : ""}
+          </div>
         </div>
       ))}
     </div>
