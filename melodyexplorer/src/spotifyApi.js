@@ -1,31 +1,20 @@
 //
-/**
- * Helper functions for interacting with the Spotify Web API
- * WARNING: Do NOT expose your actual Spotify credentials in frontend/client-side code in production.
- * For real deployments, proxy sensitive credentials requests server-side.
- * See documentation: https://developer.spotify.com/documentation/web-api/tutorials/client-credentials-flow
- */
-// Supports client credentials authentication, artist search by (language/region), and fetching top tracks
+// Helper functions for interacting with the Spotify Web API
+// NO client_id or client_secret are EVER referenced in this frontend code.
+// All authentication goes through /getSpotifyToken from our backend (see backend.js).
 //
 
 const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
 
-/* 
- * SECURITY WARNING:
- * All uses of Spotify client credentials are now REMOVED from frontend code for real deployments.
- * Always obtain your access token via a secure backend endpoint (/getSpotifyToken), which reads secrets
- * from environment variables (see melodyexplorer/backend.js).
- */
-
+// PUBLIC_INTERFACE
 /**
- * PUBLIC_INTERFACE
  * Get a Spotify access token from the backend.
- * Uses the /getSpotifyToken endpoint—never contacts Spotify directly from frontend.
+ * Uses the /getSpotifyToken endpoint to ensure client credentials stay secret.
  * Returns { access_token } or { error }
  */
 export async function getSpotifyAccessToken() {
   try {
-    // Request the access token from secure backend endpoint.
+    // Always fetch the token from our backend proxy.
     const response = await fetch("/getSpotifyToken");
     const data = await response.json();
     if (!response.ok || data.error) {
