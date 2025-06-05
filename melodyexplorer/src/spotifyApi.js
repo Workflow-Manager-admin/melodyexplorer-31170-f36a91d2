@@ -17,19 +17,18 @@ const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
  * from environment variables (see melodyexplorer/backend.js).
  */
 
-// PUBLIC_INTERFACE
 /**
- * Get a Spotify access token.
- * This function should call the backend proxy endpoint, NOT use credentials in the frontend.
+ * PUBLIC_INTERFACE
+ * Get a Spotify access token from the backend.
+ * Uses the /getSpotifyToken endpoint to ensure client credentials stay secret.
  * Returns { access_token } or { error }
  */
 export async function getSpotifyAccessToken() {
   try {
-    // Call the backend proxy endpoint for the token.
-    // Do NOT attempt to access client credentials in the frontend.
-    const res = await fetch("/getSpotifyToken");
-    const data = await res.json();
-    if (!res.ok || data.error) {
+    // Always fetch the token from our backend proxy.
+    const response = await fetch("/getSpotifyToken");
+    const data = await response.json();
+    if (!response.ok || data.error) {
       return { error: data.error_description || data.error || "Error obtaining Spotify token from backend." };
     }
     if (!data.access_token) {
