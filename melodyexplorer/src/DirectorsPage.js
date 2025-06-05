@@ -19,11 +19,12 @@ const LANGUAGES = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Punjabi", "Marathi", "Gujarati"
 ];
 
-const API_SOURCE = "deezer"; // set to 'itunes' to use iTunes integration, or control via variable
+// Change this to "itunes" to fetch from iTunes API for demo/testing
+const API_SOURCE = "deezer"; // "deezer" or "itunes"
 
 // PUBLIC_INTERFACE
 /**
- * Gallery of Directors/Artists (TheAudioDB API integration)
+ * Gallery of Directors/Artists (Deezer or iTunes API integration)
  */
 function DirectorGallery({ directors, selectedDirector, onSelect }) {
   return (
@@ -76,8 +77,9 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
               marginBottom: 6,
               minHeight: 22
             }}>{artist.name}</div>
+          {/* Show genre or nb_fan according to API */}
           <div style={{ color: "#888", fontSize: 13 }}>
-            {artist.nb_fan ? <span>▲ {artist.nb_fan.toLocaleString()} fans</span> : ""}
+            {artist.genre ? <span>{artist.genre}</span> : (typeof artist.nb_fan === "number" && <span>▲ {artist.nb_fan.toLocaleString()} fans</span>)}
           </div>
         </div>
       ))}
@@ -86,7 +88,7 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
 }
 
 /**
- * Show top tracks for selected director/artist using TheAudioDB API.
+ * Show top tracks for selected director/artist with Deezer or iTunes API.
  */
 function DirectorDetail({ director }) {
   const [tracks, setTracks] = useState([]);
@@ -99,7 +101,12 @@ function DirectorDetail({ director }) {
     setLoading(true);
     setError("");
     setTracks([]);
-    fetchTopTracksByArtistId(director.id)
+    const tracksApi =
+      API_SOURCE === "itunes"
+        ? fetchItunesTracks
+        : fetchTopTracksByArtistId;
+
+    tracksApi(director.id)
       .then(result => {
         if (!isMounted) return;
         if (result.error) {
@@ -125,7 +132,7 @@ function DirectorDetail({ director }) {
       <div style={{
         fontSize: 20, fontWeight: 600, color: COLORS.primary, marginBottom: 6
       }}>
-        {director.name} - Top Tracks
+        {director.name} - Top Tracks {API_SOURCE === "itunes" ? "(iTunes)" : "(Deezer)"}
       </div>
       {loading && (
         <div style={{ color: COLORS.slateBlue, margin: "12px 0" }}>
@@ -146,7 +153,11 @@ function DirectorDetail({ director }) {
             <li key={track.id} style={{
               padding: "6px 0",
               fontSize: 16,
-              borderBottom: i !== tracks.length - 1 ? `1px solid #eaeaea` : "none"
+              borderBottom: i !== tracks.length - 1 ? `1px solid #eaeaea` : "none",
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              minHeight: 38
             }}>
               {track.artwork && (
                 <img
@@ -161,12 +172,14 @@ function DirectorDetail({ director }) {
                     objectFit: "cover",
                     boxShadow: "0 1px 4px #ddd"
                   }}
+                  onError={e => { e.target.onerror = null; e.target.style.display = "none"; }}
                 />
               )}
               <span role="img" aria-label="note">🎵</span> {track.title}
               {track.album && (
                 <span style={{ color: "#bbb", fontSize: 13 }}> &ndash; {track.album}</span>
               )}
+              {/* Render audio preview if available */}
               {track.preview ? (
                 <audio
                   src={track.preview}
@@ -183,7 +196,7 @@ function DirectorDetail({ director }) {
       )}
       {!loading && !error && tracks && tracks.length === 0 && (
         <div style={{ color: COLORS.orangeHighlight, marginTop: 8 }}>
-          No tracks found on Deezer.
+          No tracks found.
         </div>
       )}
     </div>
@@ -196,7 +209,7 @@ const languageFromCode = (langCode) =>
 /**
  * PUBLIC_INTERFACE
  * Route for "/language/:lang"
- * Integrates TheAudioDB API for dynamic music director and track fetching
+ * Integrates Deezer or iTunes API for dynamic music director and track fetching
  */
 export default function DirectorsPage() {
   const { lang } = useParams();
@@ -245,12 +258,12 @@ export default function DirectorsPage() {
           textAlign: "center", marginBottom: 8, fontWeight: 600, color: COLORS.tealAccent, fontSize: 21
         }}>
           {loading
-            ? "Loading directors (Deezer)..."
+            ? `Loading directors (${API_SOURCE === "itunes" ? "iTunes" : "Deezer"})...`
             : error
-            ? `Error: ${error}`
-            : (directors.length === 0
-               ? "No directors available for this language."
-               : `Select a Music Director (${language})`)}
+              ? `Error: ${error}`
+              : (directors.length === 0
+                ? "No directors available for this language."
+                : `Select a Music Director (${language})`)}
         </div>
         {!loading && !error && (
           <DirectorGallery
