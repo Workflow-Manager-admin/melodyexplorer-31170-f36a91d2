@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { searchArtistsByLanguage, fetchTopTracksByArtistId } from "./deezerApi";
+import { searchArtists as searchItunesArtists, fetchTopTracksByArtistId as fetchItunesTracks } from "./itunesApi";
 import SpotifyTrackSearch from "./SpotifyTrackSearch";
 
 const COLORS = {
@@ -17,6 +18,8 @@ const COLORS = {
 const LANGUAGES = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Punjabi", "Marathi", "Gujarati"
 ];
+
+const API_SOURCE = "deezer"; // set to 'itunes' to use iTunes integration, or control via variable
 
 // PUBLIC_INTERFACE
 /**
