@@ -55,9 +55,15 @@ export async function fetchTopTracksByArtistId(artistId) {
   try {
     // Return 10 most popular tracks (by order in iTunes API)
     const url = `${ITUNES_BASE_URL}/lookup?id=${artistId}&entity=song&limit=10`;
+    if (process.env.NODE_ENV === "development") {
+      console.log("[iTunesAPI] Fetching tracks for artist: ", url);
+    }
     const res = await fetch(url);
     if (!res.ok) throw new Error("Failed to fetch tracks from iTunes.");
     const data = await res.json();
+    if (process.env.NODE_ENV === "development") {
+      console.log("[iTunesAPI] Tracks fetch response:", data);
+    }
     // Tracks are in .results (first element is artist, rest are tracks)
     if (!data.results || data.results.length <= 1) throw new Error("No tracks found.");
     // Remove first element (artist itself)
