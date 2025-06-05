@@ -1,3 +1,8 @@
+/**
+ * WARNING: Do NOT put real Spotify client credentials in frontend code for real deployments.
+ * Use only for demos/dev in private. See src/spotifyApi.js for security.
+ */
+
 import React, { useState, useEffect } from "react";
 
 /**
