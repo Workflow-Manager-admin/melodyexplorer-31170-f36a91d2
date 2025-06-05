@@ -96,7 +96,7 @@ function DirectorDetail({ director }) {
     setLoading(true);
     setError("");
     setTracks([]);
-    fetchTopTracksForArtist(director.strArtist)
+    fetchTopTracksByArtistId(director.id)
       .then(result => {
         if (!isMounted) return;
         if (result.error) {
@@ -122,11 +122,11 @@ function DirectorDetail({ director }) {
       <div style={{
         fontSize: 20, fontWeight: 600, color: COLORS.primary, marginBottom: 6
       }}>
-        {director.strArtist} - Top Tracks
+        {director.name} - Top Tracks
       </div>
       {loading && (
         <div style={{ color: COLORS.slateBlue, margin: "12px 0" }}>
-          Loading tracks...
+          Loading tracks from Deezer...
         </div>
       )}
       {error && (
@@ -140,18 +140,33 @@ function DirectorDetail({ director }) {
           maxWidth: 430, color: COLORS.slateBlue
         }}>
           {tracks.map((track, i) => (
-            <li key={track.idTrack} style={{
+            <li key={track.id} style={{
               padding: "6px 0",
               fontSize: 16,
               borderBottom: i !== tracks.length - 1 ? `1px solid #eaeaea` : "none"
             }}>
-              <span role="img" aria-label="note">🎵</span> {track.strTrack}
-              {track.intYearReleased ? (
-                <span style={{ color: "#aaa", fontSize: 13 }}> ({track.intYearReleased})</span>
+              <span role="img" aria-label="note">🎵</span> {track.title}
+              {track.album && (
+                <span style={{ color: "#bbb", fontSize: 13 }}> &ndash; {track.album}</span>
+              )}
+              {track.preview ? (
+                <audio
+                  src={track.preview}
+                  controls
+                  style={{ verticalAlign: "middle", marginLeft: 9, height: 23 }}
+                  preload="none"
+                >
+                  Your browser does not support audio.
+                </audio>
               ) : null}
             </li>
           ))}
         </ul>
+      )}
+      {!loading && !error && tracks && tracks.length === 0 && (
+        <div style={{ color: COLORS.orangeHighlight, marginTop: 8 }}>
+          No tracks found on Deezer.
+        </div>
       )}
     </div>
   );
