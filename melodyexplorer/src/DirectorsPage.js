@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { fetchArtistsByLanguage, fetchTopTracksForArtist } from "./theaudiodbApi";
 import SpotifyTrackSearch from "./SpotifyTrackSearch";
 
-/** --- Color Palette --- */
+const COLORS = {
   primary: "#eca7d6",
   secondary: "#191414",
   accent: "#fffafe",
@@ -18,6 +18,7 @@ const LANGUAGES = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Punjabi", "Marathi", "Gujarati"
 ];
 
+// PUBLIC_INTERFACE
 /**
  * Gallery of Directors/Artists (TheAudioDB API integration)
  */
@@ -159,6 +160,7 @@ const languageFromCode = (langCode) =>
 /**
  * PUBLIC_INTERFACE
  * Route for "/language/:lang"
+ * Integrates TheAudioDB API for dynamic music director and track fetching
  */
 export default function DirectorsPage() {
   const { lang } = useParams();
