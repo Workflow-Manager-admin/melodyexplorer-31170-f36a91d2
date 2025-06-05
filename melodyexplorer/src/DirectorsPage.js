@@ -78,8 +78,36 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
   );
 }
 
+/**
+ * Show top tracks for selected director/artist using TheAudioDB API.
+ */
 function DirectorDetail({ director }) {
+  const [tracks, setTracks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!director) return;
+    setLoading(true);
+    setError("");
+    setTracks([]);
+    fetchTopTracksForArtist(director.strArtist)
+      .then(result => {
+        if (!isMounted) return;
+        if (result.error) {
+          setError(result.error);
+          setTracks([]);
+        } else {
+          setTracks(result.tracks);
+        }
+        setLoading(false);
+      });
+    return () => { isMounted = false; };
+  }, [director]);
+
   if (!director) return null;
+
   return (
     <div style={{
       marginTop: 16,
@@ -90,22 +118,37 @@ function DirectorDetail({ director }) {
       <div style={{
         fontSize: 20, fontWeight: 600, color: COLORS.primary, marginBottom: 6
       }}>
-        {director.name} - Popular Songs
+        {director.strArtist} - Top Tracks
       </div>
-      <ul style={{
-        listStyle: "none", padding: 0, margin: "0 auto",
-        maxWidth: 430, color: COLORS.slateBlue
-      }}>
-        {director.popularSongs.map((song, i) => (
-          <li key={song} style={{
-            padding: "6px 0",
-            fontSize: 16,
-            borderBottom: i !== director.popularSongs.length - 1 ? `1px solid #eaeaea` : "none"
-          }}>
-            <span role="img" aria-label="note">🎵</span> {song}
-          </li>
-        ))}
-      </ul>
+      {loading && (
+        <div style={{ color: COLORS.slateBlue, margin: "12px 0" }}>
+          Loading tracks...
+        </div>
+      )}
+      {error && (
+        <div style={{ color: COLORS.orangeHighlight, marginBottom: 5 }}>
+          {error}
+        </div>
+      )}
+      {!loading && !error && tracks && (
+        <ul style={{
+          listStyle: "none", padding: 0, margin: "0 auto",
+          maxWidth: 430, color: COLORS.slateBlue
+        }}>
+          {tracks.map((track, i) => (
+            <li key={track.idTrack} style={{
+              padding: "6px 0",
+              fontSize: 16,
+              borderBottom: i !== tracks.length - 1 ? `1px solid #eaeaea` : "none"
+            }}>
+              <span role="img" aria-label="note">🎵</span> {track.strTrack}
+              {track.intYearReleased ? (
+                <span style={{ color: "#aaa", fontSize: 13 }}> ({track.intYearReleased})</span>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
