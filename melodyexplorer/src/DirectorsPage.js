@@ -129,7 +129,7 @@ function DirectorDetail({ director }) {
       </div>
       {loading && (
         <div style={{ color: COLORS.slateBlue, margin: "12px 0" }}>
-          Loading tracks from Deezer...
+          Loading tracks from {API_SOURCE === "itunes" ? "iTunes" : "Deezer"}...
         </div>
       )}
       {error && (
@@ -148,6 +148,21 @@ function DirectorDetail({ director }) {
               fontSize: 16,
               borderBottom: i !== tracks.length - 1 ? `1px solid #eaeaea` : "none"
             }}>
+              {track.artwork && (
+                <img
+                  src={track.artwork}
+                  alt={track.title}
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 4,
+                    marginRight: 7,
+                    verticalAlign: "middle",
+                    objectFit: "cover",
+                    boxShadow: "0 1px 4px #ddd"
+                  }}
+                />
+              )}
               <span role="img" aria-label="note">🎵</span> {track.title}
               {track.album && (
                 <span style={{ color: "#bbb", fontSize: 13 }}> &ndash; {track.album}</span>
