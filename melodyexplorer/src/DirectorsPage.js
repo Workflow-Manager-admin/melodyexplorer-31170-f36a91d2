@@ -198,7 +198,12 @@ export default function DirectorsPage() {
     setSelectedDirector(null);
     setLoading(true);
     setError("");
-    searchArtistsByLanguage(language)
+    // Switch between Deezer and iTunes based on API_SOURCE.
+    const fetchArtists =
+      API_SOURCE === "itunes"
+        ? searchItunesArtists
+        : searchArtistsByLanguage;
+    fetchArtists(language)
       .then(result => {
         if (result.error) {
           setError(result.error);
