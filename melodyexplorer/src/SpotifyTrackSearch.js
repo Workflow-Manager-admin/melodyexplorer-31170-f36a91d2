@@ -1,6 +1,6 @@
 /**
- * WARNING: Do NOT put real Spotify client credentials in frontend code for real deployments.
- * Use only for demos/dev in private. See src/spotifyApi.js for security.
+ * This component ONLY uses access tokens from the backend-provided /getSpotifyToken endpoint.
+ * There are NO client_id or client_secret references in the frontend.
  */
 
 import React, { useState, useEffect } from "react";
