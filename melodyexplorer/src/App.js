@@ -492,59 +492,69 @@ function groupLanguagesByFirstLetter(langs) {
 
 // --- Components ---
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * LanguageGrid renders languages in a 3x3 responsive grid.
+ * Only accepts an `onSelect` and selected language.
+ */
 function LanguageGrid({ languages, selected, onSelect }) {
-  /**
-   * Display languages in columns grouped by first letter. 
-   * PUBLIC_INTERFACE
-   */
-  const groups = groupLanguagesByFirstLetter(languages);
+  // Build 3*3 grid (or N*N if more languages)
+  const numCols = 3;
+  const numRows = Math.ceil(languages.length / numCols);
+
+  // Fill the grid by row
+  const grid = Array.from({ length: numRows }, (_, row) =>
+    languages.slice(row * numCols, row * numCols + numCols)
+  );
 
   return (
-    <div style={{
-      display: "flex",
-      gap: "32px",
-      justifyContent: "center",
-      background: "#ffffffaa",
-      borderRadius: 16,
-      margin: "32px 0",
-      boxShadow: "0 2px 8px #0001",
-      padding: "20px 24px"
-    }}>
-      {groups.map((group) => (
-        <div key={group.letter}>
-          <div style={{
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${numCols}, minmax(150px, 1fr))`,
+        gap: "28px",
+        background: "#ffffffcc",
+        borderRadius: 18,
+        margin: "36px 0 36px 0",
+        boxShadow: "0 2px 10px #0001",
+        padding: "28px 28px"
+      }}
+    >
+      {languages.map((lang, idx) => (
+        <button
+          key={lang}
+          onClick={() => onSelect(lang)}
+          className="lang-btn"
+          style={{
+            background: selected === lang ? COLORS.slateBlue : COLORS.tealAccent,
+            color: selected === lang ? COLORS.accent : COLORS.text,
+            padding: "30px 0",
+            margin: "0",
+            border: "none",
+            borderRadius: 10,
+            cursor: "pointer",
+            width: "100%",
+            fontSize: 18,
             fontWeight: 700,
-            fontSize: 20,
-            color: COLORS.slateBlue,
-            letterSpacing: "2px",
-            marginBottom: 6,
-            textAlign: "center"
-          }}>{group.letter}</div>
-          {group.langs.map((lang) => (
-            <button
-              key={lang}
-              onClick={() => onSelect(lang)}
-              className="lang-btn"
-              style={{
-                background: selected === lang ? COLORS.slateBlue : COLORS.tealAccent,
-                color: selected === lang ? COLORS.accent : COLORS.text,
-                padding: "8px 14px",
-                margin: "5px auto",
-                border: "none",
-                borderRadius: 8,
-                cursor: "pointer",
-                display: "block",
-                minWidth: 80,
-                fontSize: 15,
-                fontWeight: 500,
-                boxShadow: selected === lang ? `0 2px 4px ${COLORS.slateBlue}55` : undefined,
-              }}
-            >
-              {lang}
-            </button>
-          ))}
-        </div>
+            letterSpacing: "1.5px",
+            boxShadow: selected === lang ? `0 2px 7px ${COLORS.slateBlue}40` : undefined,
+            outline: selected === lang ? `2.5px solid ${COLORS.orangeHighlight}` : undefined,
+            transition: "background 0.18s, color 0.18s"
+          }}
+          aria-current={selected === lang ? "true" : undefined}
+          tabIndex={0}
+        >
+          <span style={{
+            fontSize: 28,
+            fontWeight: 800,
+            color: selected === lang ? COLORS.primary : COLORS.slateBlue,
+            display: "block",
+            marginBottom: 10
+          }}>
+            {lang[0]}
+          </span>
+          {lang}
+        </button>
       ))}
     </div>
   );
