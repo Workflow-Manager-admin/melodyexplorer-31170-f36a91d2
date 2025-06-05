@@ -19,8 +19,11 @@ const LANGUAGES = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Punjabi", "Marathi", "Gujarati"
 ];
 
-// Change this to "itunes" to fetch from iTunes API for demo/testing
-const API_SOURCE = "deezer"; // "deezer" or "itunes"
+/**
+ * Change this to "itunes" to fetch from iTunes API for demo/testing.
+ * Once confirmed, revert to "deezer" or make this configurable.
+ */
+const API_SOURCE = "itunes"; // "deezer" or "itunes"
 
 // PUBLIC_INTERFACE
 /**

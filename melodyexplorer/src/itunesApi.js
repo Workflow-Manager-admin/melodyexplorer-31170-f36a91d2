@@ -17,9 +17,15 @@ export async function searchArtists(term) {
   // Restrict search to 'music' entity and only artists
   try {
     const url = `${ITUNES_BASE_URL}/search?term=${encodeURIComponent(term)}&entity=musicArtist&limit=15`;
+    if (process.env.NODE_ENV === "development") {
+      console.log("[iTunesAPI] Searching artists: ", url);
+    }
     const res = await fetch(url);
     if (!res.ok) throw new Error("Failed to fetch from iTunes.");
     const data = await res.json();
+    if (process.env.NODE_ENV === "development") {
+      console.log("[iTunesAPI] Artist search response:", data);
+    }
 
     if (!data.results || data.results.length === 0) throw new Error("No artists found.");
     // Map to unified artist structure for gallery display
@@ -27,6 +33,7 @@ export async function searchArtists(term) {
       artists: data.results.map(a => ({
         id: a.artistId,
         name: a.artistName,
+        // artworkUrl100 only present for some queries. Fallback to using empty string if missing
         picture: a.artworkUrl100 ? a.artworkUrl100.replace('100x100bb', '200x200bb') : "",
         genre: a.primaryGenreName,
         // No nb_fan equivalent
