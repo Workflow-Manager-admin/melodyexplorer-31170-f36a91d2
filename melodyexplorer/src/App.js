@@ -18,6 +18,21 @@ const COLORS = {
 /**
  * --- Expanded Language and Director Dataset ---
  */
+/**
+ * Maps each language to a display initial in its native script.
+ */
+const LANGUAGE_INITIALS = {
+  "Hindi": "हि",
+  "Tamil": "த",
+  "Telugu": "తె",
+  "Kannada": "ಕ",
+  "Malayalam": "മ",
+  "Bengali": "ব",
+  "Punjabi": "ਪੰ",
+  "Marathi": "म",
+  "Gujarati": "ગ",
+};
+
 const LANGUAGES = [
   "Hindi",
   "Tamil",
