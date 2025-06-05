@@ -17,7 +17,6 @@ const LANGUAGES = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Punjabi", "Marathi", "Gujarati"
 ];
 
-// music directors and SpotifyTrackSearch are imported from App.js
 import MUSIC_DIRECTORS from "./musicDirectorsData";
 import SpotifyTrackSearch from "./SpotifyTrackSearch";
 
