@@ -215,7 +215,7 @@ const languageFromCode = (langCode) =>
 /**
  * PUBLIC_INTERFACE
  * Route for "/language/:lang"
- * Integrates Deezer or iTunes API for dynamic music director and track fetching
+ * Integrates Spotify Web API for dynamic music director and track fetching
  */
 export default function DirectorsPage() {
   const { lang } = useParams();
@@ -225,6 +225,21 @@ export default function DirectorsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedDirector, setSelectedDirector] = useState(null);
+  const [token, setToken] = useState("");
+  const [tokenError, setTokenError] = useState("");
+
+  // Get a Spotify token on mount or when language changes
+  useEffect(() => {
+    let isMounted = true;
+    setToken("");
+    setTokenError("");
+    getSpotifyAccessToken().then(res => {
+      if (!isMounted) return;
+      if (res.error) setTokenError(res.error);
+      else setToken(res.access_token);
+    });
+    return () => { isMounted = false; };
+  }, [language]);
 
   useEffect(() => {
     if (!language || typeof language !== "string" || !language.trim()) {
@@ -234,16 +249,19 @@ export default function DirectorsPage() {
       setSelectedDirector(null);
       return;
     }
+    if (!token) {
+      // Wait for token
+      setError("");
+      setDirectors([]);
+      setLoading(true);
+      setSelectedDirector(null);
+      return;
+    }
     setDirectors([]);
     setSelectedDirector(null);
     setLoading(true);
     setError("");
-    // Switch between Deezer and iTunes based on API_SOURCE.
-    const fetchArtists =
-      API_SOURCE === "itunes"
-        ? searchItunesArtists
-        : searchArtistsByLanguage;
-    fetchArtists(language)
+    searchSpotifyArtistsByLanguage(language, token)
       .then(result => {
         if (result.error) {
           setError(result.error);
@@ -256,12 +274,19 @@ export default function DirectorsPage() {
         }
         setLoading(false);
       });
-  }, [language]);
+  }, [language, token]);
 
   if (!language) {
     return (
       <div style={{ textAlign: 'center', color: COLORS.orangeHighlight, fontWeight: 600, padding: 32 }}>
         Language not found.
+      </div>
+    );
+  }
+  if (tokenError) {
+    return (
+      <div style={{ textAlign: 'center', color: COLORS.orangeHighlight, fontWeight: 600, padding: 32 }}>
+        Spotify authentication failed: {tokenError}
       </div>
     );
   }
@@ -273,7 +298,7 @@ export default function DirectorsPage() {
           textAlign: "center", marginBottom: 8, fontWeight: 600, color: COLORS.tealAccent, fontSize: 21
         }}>
           {loading
-            ? `Loading directors (${API_SOURCE === "itunes" ? "iTunes" : "Deezer"})...`
+            ? `Loading directors (Spotify)...`
             : error
               ? `Error: ${error}`
               : (directors.length === 0
@@ -288,8 +313,8 @@ export default function DirectorsPage() {
           />
         )}
       </div>
-      {selectedDirector && (
-        <DirectorDetail director={selectedDirector} />
+      {selectedDirector && token && (
+        <DirectorDetail director={selectedDirector} token={token} />
       )}
       {selectedDirector && (
         <div style={{
