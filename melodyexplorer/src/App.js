@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-// --- Configuration Data ---
-
-// Color palette for inline styles and CSS variables
+/**
+ * --- Color Palette ---
+ */
 const COLORS = {
-  primary: "#eca7d6",          // not in the defaults, use for accents
-  secondary: "#191414",        // black, Spotify
-  accent: "#fffafe",           // for light panel backgrounds etc
+  primary: "#eca7d6",
+  secondary: "#191414",
+  accent: "#fffafe",
   background: "#F5F5F5",
   tealAccent: "#88BDBC",
   slateBlue: "#254E58",
@@ -16,10 +16,8 @@ const COLORS = {
 };
 
 /**
- * Expanded language and music director dataset for a richer MelodyExplorer.
+ * --- Expanded Language and Director Dataset ---
  */
-
-// Expanded language list (9 for 3x3 grid)
 const LANGUAGES = [
   "Hindi",
   "Tamil",
@@ -32,7 +30,6 @@ const LANGUAGES = [
   "Gujarati",
 ];
 
-// Expanded, richer director data, 4-5 per language, 4-6 songs each
 const MUSIC_DIRECTORS = [
   // HINDI
   {
@@ -474,38 +471,11 @@ const MUSIC_DIRECTORS = [
   },
 ];
 
-// --- Helper functions ---
-
-function groupLanguagesByFirstLetter(langs) {
-  // Returns: Array of {letter, langs: Array}
-  const groups = {};
-  langs.forEach((lang) => {
-    const l = lang[0].toUpperCase();
-    if (!groups[l]) groups[l] = [];
-    groups[l].push(lang);
-  });
-  // Return sorted by letter
-  return Object.entries(groups)
-    .sort(([la,], [lb,]) => la.localeCompare(lb))
-    .map(([letter, langs]) => ({ letter, langs }));
-}
-
-// --- Components ---
-
 /**
- * PUBLIC_INTERFACE
- * LanguageGrid renders languages in a 3x3 responsive grid.
- * Only accepts an `onSelect` and selected language.
+ * LanguageGrid renders available languages in a 3x3 column grid.
  */
 function LanguageGrid({ languages, selected, onSelect }) {
-  // Build 3*3 grid (or N*N if more languages)
   const numCols = 3;
-  const numRows = Math.ceil(languages.length / numCols);
-
-  // Fill the grid by row
-  const grid = Array.from({ length: numRows }, (_, row) =>
-    languages.slice(row * numCols, row * numCols + numCols)
-  );
 
   return (
     <div
@@ -520,7 +490,7 @@ function LanguageGrid({ languages, selected, onSelect }) {
         padding: "28px 28px"
       }}
     >
-      {languages.map((lang, idx) => (
+      {languages.map((lang) => (
         <button
           key={lang}
           onClick={() => onSelect(lang)}
@@ -560,12 +530,10 @@ function LanguageGrid({ languages, selected, onSelect }) {
   );
 }
 
-// PUBLIC_INTERFACE
+/**
+ * Show gallery of directors
+ */
 function DirectorGallery({ directors, selectedDirector, onSelect }) {
-  /**
-   * Show a flex gallery of director images with name, highlight on select.
-   * PUBLIC_INTERFACE
-   */
   return (
     <div style={{
       display: "flex",
@@ -621,12 +589,7 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
   );
 }
 
-// PUBLIC_INTERFACE
 function DirectorDetail({ director }) {
-  /**
-   * Shows a list of director's popular songs.
-   * PUBLIC_INTERFACE
-   */
   if (!director) return null;
   return (
     <div style={{
@@ -658,14 +621,10 @@ function DirectorDetail({ director }) {
   );
 }
 
-// PUBLIC_INTERFACE
+/**
+ * Dummy SpotifyTrackSearch component for compatibility
+ */
 function SpotifyTrackSearch({ show, accentColor }) {
-  /**
-   * Track search bar with results and (short preview) playback, via Spotify public search API.
-   * PUBLIC_INTERFACE
-   */
-  // Spotify client id/secret would need to be set up with a proxy or using implicit grant.
-  // For demo, we'll use "client credentials" grant via a public endpoint for testing/demo only (no user login/playback!), and play previews only.
   const [token, setToken] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -674,9 +633,7 @@ function SpotifyTrackSearch({ show, accentColor }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Get Spotify token, store it in state
   useEffect(() => {
-    // NOTE: For a real app, move this to backend. Using public demo client.
     async function fetchToken() {
       setError("");
       try {
@@ -700,10 +657,8 @@ function SpotifyTrackSearch({ show, accentColor }) {
       }
     }
     fetchToken();
-    // Token usually valid for 1 hour.
   }, []);
 
-  // Handle search
   const handleSearch = async (ev) => {
     ev.preventDefault();
     if (!query.trim() || !token) return;
@@ -734,7 +689,6 @@ function SpotifyTrackSearch({ show, accentColor }) {
     setLoading(false);
   };
 
-  // Playback controls - preview_url only!
   const handlePlay = (track) => {
     if (!track.preview_url) return;
     if (audio && playingTrackId === track.id) {
@@ -784,7 +738,7 @@ function SpotifyTrackSearch({ show, accentColor }) {
           type="text"
           value={query}
           onChange={(ev) => setQuery(ev.target.value)}
-          placeholder="Search songs, albums or artists on Spotify (try 'Chaiyya' or 'Vande Mataram')"
+          placeholder="Search songs, albums or artists on Spotify"
           style={{
             padding: "11px 16px",
             borderRadius: 8,
@@ -898,29 +852,23 @@ function SpotifyTrackSearch({ show, accentColor }) {
   );
 }
 
-// PUBLIC_INTERFACE
+/**
+ * Main container - orchestrates all views/states
+ */
 function MelodyExplorerContainer() {
-  /**
-   * Main container that holds the state and orchestrates flow between language grid,
-   * director gallery, details, and Spotify search.
-   * PUBLIC_INTERFACE
-   */
-  // State for selected language
-  const [selectedLanguage, setSelectedLanguage] = useState(LANGUAGES[0]);
-  // State for selected director
+  // Start with NO language selected (null)
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [selectedDirector, setSelectedDirector] = useState(null);
 
-  // Directors for the selected language
-  const directors = MUSIC_DIRECTORS.filter((d) =>
-    d.language.includes(selectedLanguage)
-  );
+  // Update director list when language changes
+  const directors = selectedLanguage
+    ? MUSIC_DIRECTORS.filter((d) => d.language.includes(selectedLanguage))
+    : [];
 
-  // When selectedLanguage changes, reset selectedDirector
   useEffect(() => {
     setSelectedDirector(null);
   }, [selectedLanguage]);
 
-  // Immersive music-themed background (musical notes SVG as background)
   return (
     <div
       className="explorer-bg-music"
@@ -928,8 +876,7 @@ function MelodyExplorerContainer() {
         minHeight: "100vh",
         background: `linear-gradient(135deg, ${COLORS.background} 80%, ${COLORS.tealAccent} 100%)`,
         position: "relative",
-        // 'overlay' SVG in a low opacity, extra dreamy
-        overflowX: "hidden"
+        overflowX: "hidden",
       }}
     >
       {/* Music notes SVG Overlay */}
@@ -1020,7 +967,7 @@ function MelodyExplorerContainer() {
             color: COLORS.orangeHighlight,
             marginBottom: 7,
             fontWeight: 600,
-          }}>Discover music by language, director &amp; play tracks with Spotify</div>
+          }}>Discover music by language, director & play tracks with Spotify</div>
           <div style={{
             color: COLORS.text,
             fontSize: 17,
@@ -1038,48 +985,50 @@ function MelodyExplorerContainer() {
           selected={selectedLanguage}
           onSelect={setSelectedLanguage}
         />
-        {/* Director gallery */}
-        <div>
-          <div style={{
-            textAlign: "center", marginBottom: 8, fontWeight: 600, color: COLORS.tealAccent, fontSize: 21
-          }}>
-            {directors.length === 0
-              ? "No directors available for this language."
-              : "Select a Music Director"}
-          </div>
-          <DirectorGallery
-            directors={directors}
-            selectedDirector={selectedDirector}
-            onSelect={setSelectedDirector}
-          />
-        </div>
-        {/* Director popular songs */}
-        {selectedDirector && (
-          <DirectorDetail director={selectedDirector} />
-        )}
-        {/* Spotify track search - only if a director is selected */}
-        {selectedDirector && (
-          <div style={{
-            margin: "0 auto",
-            maxWidth: 680,
-            marginTop: 24,
-            background: "#fff6",
-            borderRadius: 18,
-            boxShadow: "0 2px 4px #0001"
-          }}>
-            <div style={{
-              textAlign: "center",
-              color: COLORS.slateBlue,
-              fontWeight: 600,
-              fontSize: 18,
-              margin: "13px 8px 0 8px",
-            }}>
-              <span style={{ color: COLORS.tealAccent }}>
-                Search for more songs by {selectedDirector.name} (Spotify)
-              </span>
+        {/* Only show directors, details, search if language is selected */}
+        {selectedLanguage && (
+          <>
+            <div>
+              <div style={{
+                textAlign: "center", marginBottom: 8, fontWeight: 600, color: COLORS.tealAccent, fontSize: 21
+              }}>
+                {directors.length === 0
+                  ? "No directors available for this language."
+                  : "Select a Music Director"}
+              </div>
+              <DirectorGallery
+                directors={directors}
+                selectedDirector={selectedDirector}
+                onSelect={setSelectedDirector}
+              />
             </div>
-            <SpotifyTrackSearch show accentColor={COLORS.tealAccent} />
-          </div>
+            {selectedDirector && (
+              <DirectorDetail director={selectedDirector} />
+            )}
+            {selectedDirector && (
+              <div style={{
+                margin: "0 auto",
+                maxWidth: 680,
+                marginTop: 24,
+                background: "#fff6",
+                borderRadius: 18,
+                boxShadow: "0 2px 4px #0001"
+              }}>
+                <div style={{
+                  textAlign: "center",
+                  color: COLORS.slateBlue,
+                  fontWeight: 600,
+                  fontSize: 18,
+                  margin: "13px 8px 0 8px",
+                }}>
+                  <span style={{ color: COLORS.tealAccent }}>
+                    Search for more songs by {selectedDirector.name} (Spotify)
+                  </span>
+                </div>
+                <SpotifyTrackSearch show accentColor={COLORS.tealAccent} />
+              </div>
+            )}
+          </>
         )}
       </main>
       {/* Footer */}
@@ -1102,11 +1051,9 @@ function MelodyExplorerContainer() {
   );
 }
 
-// --- Main App Export ---
-
-// PUBLIC_INTERFACE
+/** MAIN APP ENTRY */
 function App() {
-  /** Replace template with MelodyExplorerContainer. */
+  // Replace template with MelodyExplorerContainer.
   return <MelodyExplorerContainer />;
 }
 
