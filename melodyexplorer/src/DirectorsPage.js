@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { fetchArtistsByLanguage, fetchTopTracksForArtist } from "./theaudiodbApi";
+import { searchArtistsByLanguage, fetchTopTracksByArtistId } from "./deezerApi";
 import SpotifyTrackSearch from "./SpotifyTrackSearch";
 
 const COLORS = {
