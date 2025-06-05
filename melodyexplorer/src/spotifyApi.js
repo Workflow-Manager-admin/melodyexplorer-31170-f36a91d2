@@ -10,65 +10,34 @@
 
 const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
 
-// SECURITY WARNING: Never commit real client IDs or secrets in public repos.
-// These are for demo purposes only and should be managed securely (e.g., via environment variables and a backend).
-
-const SPOTIFY_CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID || "6b9da695e18f407f84c4f5da8431ee24";
-const SPOTIFY_CLIENT_SECRET = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET || "4e406d263f464516bb24925c54eb14d6";
-
-/**
- * Encode client credentials for Spotify authentication (Base64 of <client_id>:<client_secret>).
- * Avoids legacy btoa edge case issues (with Unicode).
+/* 
+ * SECURITY WARNING:
+ * All uses of Spotify client credentials are now REMOVED from frontend code for real deployments.
+ * Always obtain your access token via a secure backend endpoint (/getSpotifyToken), which reads secrets
+ * from environment variables (see melodyexplorer/backend.js).
  */
-function encodeSpotifyClientCredentials(clientId, clientSecret) {
-  return window.btoa(unescape(encodeURIComponent(`${clientId}:${clientSecret}`)));
-}
 
 // PUBLIC_INTERFACE
 /**
- * Get a Spotify access token (Client Credentials grant).
+ * Get a Spotify access token.
+ * This function should call the backend proxy endpoint, NOT use credentials in the frontend.
  * Returns { access_token } or { error }
  */
 export async function getSpotifyAccessToken() {
   try {
-    // Validate client ID/secret (for local dev only – production should not expose these!)
-    if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET ||
-        SPOTIFY_CLIENT_ID === "YOUR_CLIENT_ID" || SPOTIFY_CLIENT_SECRET === "YOUR_CLIENT_SECRET") {
-      return { error: "Spotify client credentials are not configured. Set these securely in the environment." };
-    }
-
-    const authHeader = encodeSpotifyClientCredentials(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET);
-
-    const res = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + authHeader
-      },
-      body: "grant_type=client_credentials"
-    });
-
-    // Attempt to extract error message if response not OK
-    let errorMessage = "Failed to get Spotify token.";
-    let errorPayload = null;
-    if (!res.ok) {
-      try {
-        errorPayload = await res.json();
-        if (errorPayload && errorPayload.error) {
-          errorMessage = `Spotify API error: ${errorPayload.error_description || errorPayload.error}`;
-        }
-      } catch (e) {
-        // Ignore JSON parse error, use default message
-      }
-      throw new Error(errorMessage);
-    }
-
+    // Call the backend proxy endpoint for the token.
+    // Do NOT attempt to access client credentials in the frontend.
+    const res = await fetch("/getSpotifyToken");
     const data = await res.json();
-    if (!data.access_token) throw new Error("Token missing from Spotify response.");
+    if (!res.ok || data.error) {
+      return { error: data.error_description || data.error || "Error obtaining Spotify token from backend." };
+    }
+    if (!data.access_token) {
+      return { error: "No access token returned from backend." };
+    }
     return { access_token: data.access_token };
   } catch (e) {
-    // Ensure the error message is user-debuggable but not leaking credentials.
-    return { error: e.message || "Could not obtain Spotify token." };
+    return { error: e.message || "Could not obtain Spotify token from backend." };
   }
 }
 
