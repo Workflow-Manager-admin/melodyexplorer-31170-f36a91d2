@@ -34,39 +34,27 @@ function SpotifyTrackSearch({ show, accentColor }) {
     async function fetchToken() {
       setError("");
       try {
-        // WARNING: Never put real client ID/secret here in production. See src/spotifyApi.js for secure notes.
-        const clientId = process.env.REACT_APP_SPOTIFY_CLIENT_ID || "6b9da695e18f407f84c4f5da8431ee24";
-        const clientSecret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET || "4e406d263f464516bb24925c54eb14d6";
-        if (!clientId || !clientSecret ||
-            clientId === "YOUR_CLIENT_ID" || clientSecret === "YOUR_CLIENT_SECRET") {
-          setError("Spotify client credentials not configured. Set via environment or in src/spotifyApi.js for local testing only.");
-          return;
-        }
-        const authHeader = window.btoa(unescape(encodeURIComponent(`${clientId}:${clientSecret}`)));
-        const res = await fetch(
-          "https://accounts.spotify.com/api/token",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              Authorization: "Basic " + authHeader,
-            },
-            body: "grant_type=client_credentials",
-          }
-        );
+        // NOTE: Token retrieval is now done securely via the backend proxy endpoint.
+        //       This ensures client_id and client_secret are NEVER exposed in frontend code.
+        //       Example usage:
+        //       const res = await fetch("/getSpotifyToken");
+        //       const data = await res.json();
+        //       if (data.access_token) setToken(data.access_token);
+
+        const res = await fetch("/getSpotifyToken");
         const data = await res.json();
 
-        if (!res.ok) {
-          setError(data.error_description || data.error || "Error obtaining Spotify token.");
+        if (!res.ok || data.error) {
+          setError(data.error_description || data.error || "Error obtaining Spotify token from backend.");
           return;
         }
         if (!data.access_token) {
-          setError("No access token returned from Spotify.");
+          setError("No access token returned from backend.");
           return;
         }
         setToken(data.access_token);
       } catch (e) {
-        setError(e.message || "Error obtaining Spotify token.");
+        setError(e.message || "Error obtaining Spotify token from backend.");
       }
     }
     fetchToken();
