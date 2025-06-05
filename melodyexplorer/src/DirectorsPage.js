@@ -91,9 +91,9 @@ function DirectorGallery({ directors, selectedDirector, onSelect }) {
 }
 
 /**
- * Show top tracks for selected director/artist with Deezer or iTunes API.
+ * Show top tracks for selected director/artist with Spotify API.
  */
-function DirectorDetail({ director }) {
+function DirectorDetail({ director, token }) {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -104,12 +104,7 @@ function DirectorDetail({ director }) {
     setLoading(true);
     setError("");
     setTracks([]);
-    const tracksApi =
-      API_SOURCE === "itunes"
-        ? fetchItunesTracks
-        : fetchTopTracksByArtistId;
-
-    tracksApi(director.id)
+    fetchSpotifyTopTracksByArtistId(director.id, token)
       .then(result => {
         if (!isMounted) return;
         if (result.error) {
@@ -121,7 +116,7 @@ function DirectorDetail({ director }) {
         setLoading(false);
       });
     return () => { isMounted = false; };
-  }, [director]);
+  }, [director, token]);
 
   if (!director) return null;
 
@@ -135,11 +130,11 @@ function DirectorDetail({ director }) {
       <div style={{
         fontSize: 20, fontWeight: 600, color: COLORS.primary, marginBottom: 6
       }}>
-        {director.name} - Top Tracks {API_SOURCE === "itunes" ? "(iTunes)" : "(Deezer)"}
+        {director.name} - Top Tracks (Spotify)
       </div>
       {loading && (
         <div style={{ color: COLORS.slateBlue, margin: "12px 0" }}>
-          Loading tracks from {API_SOURCE === "itunes" ? "iTunes" : "Deezer"}...
+          Loading tracks from Spotify...
         </div>
       )}
       {error && (
@@ -182,6 +177,14 @@ function DirectorDetail({ director }) {
               {track.album && (
                 <span style={{ color: "#bbb", fontSize: 13 }}> &ndash; {track.album}</span>
               )}
+              <a
+                href={track.external_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginLeft: 7, color: COLORS.tealAccent, fontSize: 15, textDecoration: "underline" }}
+                title="Open in Spotify">
+                  Open
+              </a>
               {/* Render audio preview if available */}
               {track.preview ? (
                 <audio
