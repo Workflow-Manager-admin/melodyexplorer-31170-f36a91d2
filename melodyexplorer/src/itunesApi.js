@@ -7,16 +7,24 @@
 
 const ITUNES_BASE_URL = "https://itunes.apple.com";
 
-// PUBLIC_INTERFACE
 /**
+ * PUBLIC_INTERFACE
  * Search for artists (music directors) by name or keyword (could be a language string).
  * @param {string} term - Search term (artist name, language, etc.)
  * @returns {Promise<{artists: Array}|{error: string}>}
+ *
+ * Ensures that the search term is not empty to avoid a blank/incorrect query.
+ * Maps iTunes results array to the gallery artist structure.
  */
 export async function searchArtists(term) {
   // Restrict search to 'music' entity and only artists
   try {
-    const url = `${ITUNES_BASE_URL}/search?term=${encodeURIComponent(term)}&entity=musicArtist&limit=15`;
+    const trimmedTerm = (typeof term === "string" ? term.trim() : "");
+    // Avoid sending blank/undefined/empty queries
+    if (!trimmedTerm) {
+      return { error: "Search query is empty. Please specify a language or term." };
+    }
+    const url = `${ITUNES_BASE_URL}/search?term=${encodeURIComponent(trimmedTerm)}&entity=musicArtist&limit=15`;
     if (process.env.NODE_ENV === "development") {
       console.log("[iTunesAPI] Searching artists: ", url);
     }
@@ -30,14 +38,16 @@ export async function searchArtists(term) {
     if (!data.results || data.results.length === 0) throw new Error("No artists found.");
     // Map to unified artist structure for gallery display
     return {
-      artists: data.results.map(a => ({
-        id: a.artistId,
-        name: a.artistName,
-        // artworkUrl100 only present for some queries. Fallback to using empty string if missing
-        picture: a.artworkUrl100 ? a.artworkUrl100.replace('100x100bb', '200x200bb') : "",
-        genre: a.primaryGenreName,
-        // No nb_fan equivalent
-      }))
+      artists: data.results
+        .filter(a => !!a.artistId && !!a.artistName) // filter out partial/incomplete iTunes results
+        .map(a => ({
+          id: a.artistId,
+          name: a.artistName,
+          // artworkUrl100 only present for some queries. Fallback to using empty string if missing
+          picture: a.artworkUrl100 ? a.artworkUrl100.replace('100x100bb', '200x200bb') : "",
+          genre: a.primaryGenreName,
+          // No nb_fan equivalent
+        }))
     };
   } catch (err) {
     return { error: err.message || "iTunes artist search failed." };
